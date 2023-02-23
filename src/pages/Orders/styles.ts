@@ -35,7 +35,7 @@ export const BaseContainerElements = styled.div`
   padding: 2.5rem;
 `
 
-export const TextBox = styled.p`
+export const TextBox = styled.div`
   .title {
     font-family: 'Roboto';
     font-style: normal;

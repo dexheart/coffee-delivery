@@ -63,8 +63,6 @@ export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
       }),
     )
   }
-  console.log(userOrder)
-  console.log(userOrder.length)
 
   function handleAddNewItemFromAmount(idElement: number) {
     setUserOrder((state) => {
