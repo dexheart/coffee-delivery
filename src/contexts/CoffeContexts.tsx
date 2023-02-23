@@ -12,6 +12,9 @@ interface UserOrder {
 }
 
 interface CoffeContextType {
+  handleAddNewItemFromAmount: (idElement: number) => void
+  handleRemoveOneItemFromAmount: (idElement: number) => void
+  handleRemoveCoffeFromOrder: (idElement: number) => void
   handleAddNewCoffeToOrder: (newElement: UserOrder) => void
   userOrder: UserOrder[]
 }
@@ -52,10 +55,47 @@ export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
       }
     }
   }
+
+  function handleRemoveCoffeFromOrder(idElement: number) {
+    setUserOrder((state) =>
+      state.filter((item) => {
+        return item.id !== idElement
+      }),
+    )
+  }
   console.log(userOrder)
+  console.log(userOrder.length)
+
+  function handleAddNewItemFromAmount(idElement: number) {
+    setUserOrder((state) => {
+      return state.map((item) => {
+        return item.amount < 9 && item.id === idElement
+          ? { ...item, amount: item.amount + 1 }
+          : item
+      })
+    })
+  }
+
+  function handleRemoveOneItemFromAmount(idElement: number) {
+    setUserOrder((state) => {
+      return state.map((item) => {
+        return item.amount > 1 && item.id === idElement
+          ? { ...item, amount: item.amount - 1 }
+          : item
+      })
+    })
+  }
 
   return (
-    <CoffeContext.Provider value={{ handleAddNewCoffeToOrder, userOrder }}>
+    <CoffeContext.Provider
+      value={{
+        handleAddNewItemFromAmount,
+        handleRemoveOneItemFromAmount,
+        handleRemoveCoffeFromOrder,
+        handleAddNewCoffeToOrder,
+        userOrder,
+      }}
+    >
       {children}
     </CoffeContext.Provider>
   )

@@ -11,16 +11,27 @@ import {
   PriceInformationContainer,
 } from './styles'
 
+import { CoffeContext } from '../../contexts/CoffeContexts'
+
 import cashIcon from '../../assets/OrdersIcons/cash_Icon.svg'
 import pinIcon from '../../assets/OrdersIcons/pin_Icon.svg'
 
 import creditIcon from '../../assets/OrdersIcons/creditcard_Icon.svg'
 import debitcardIcon from '../../assets/OrdersIcons/debitcard_Icon.svg'
 import moneyIcon from '../../assets/OrdersIcons/money_Icon.svg'
-
-import trashIcon from '../../assets/OrdersIcons/trash_Icon.svg'
+import { useContext } from 'react'
+import { ListOfUserOrderItens } from './ListOfUserOrderItens'
 
 export function Orders() {
+  const { userOrder } = useContext(CoffeContext)
+
+  const sumOfPriceItens = userOrder.reduce(function (accumulator, curValue) {
+    // eslint-disable-next-line prettier/prettier
+    return (accumulator + (curValue.price * curValue.amount))
+  }, 0)
+
+  const totalValue = sumOfPriceItens + 3.5
+
   return (
     <Wrapper>
       <OrderDataContainer>
@@ -131,11 +142,11 @@ export function Orders() {
         <h2>Cafés Selecionados</h2>
 
         <ItensOfOrderContainer>
-          <hr></hr>
+          <ListOfUserOrderItens />
           <PriceInformationContainer>
             <div>
               <span>Total de itens</span>
-              <span className="price">R$ 29,70</span>
+              <span className="price">R$ {sumOfPriceItens.toFixed(2)}</span>
             </div>
             <div>
               <span>Entrega</span>
@@ -143,7 +154,7 @@ export function Orders() {
             </div>
             <div>
               <span className="total">Total</span>
-              <span className="total">R$ 33,20</span>
+              <span className="total">R$ {totalValue.toFixed(2)}</span>
             </div>
           </PriceInformationContainer>
           <button>
