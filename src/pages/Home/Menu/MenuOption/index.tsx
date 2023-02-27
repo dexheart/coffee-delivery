@@ -13,6 +13,9 @@ import IconPlus from '../../../../assets/MenuOptionIcons/plus.svg'
 import IconMinus from '../../../../assets/MenuOptionIcons/minus.svg'
 import { CoffeContext } from '../../../../contexts/CoffeContexts'
 
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 interface OptionProps {
   id: number
   name: string
@@ -51,13 +54,13 @@ export function MenuOption({
 
   function handleAddNewCoffe() {
     if (amountCoffeSelected < 9) {
-      setAmountCoffeSelected((state) => amountCoffeSelected + 1)
+      setAmountCoffeSelected((state) => state + 1)
     }
   }
 
   function handleRemoveCoffe() {
     if (amountCoffeSelected > 1) {
-      setAmountCoffeSelected((state) => amountCoffeSelected - 1)
+      setAmountCoffeSelected((state) => state - 1)
     }
   }
 
@@ -90,6 +93,7 @@ export function MenuOption({
             alt=""
             onClick={() => handleAddNewCoffeToOrder(singleItemOfOrder)}
           />
+          <ToastContainer />
         </BuyButtonContainer>
       </BuyContainer>
     </MenuOptionContainer>

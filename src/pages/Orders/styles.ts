@@ -1,5 +1,9 @@
 import styled from 'styled-components'
 
+interface PaymentMethodButtonProps {
+  paymentMethod: boolean
+}
+
 export const Wrapper = styled.div`
   display: flex;
 
@@ -140,48 +144,51 @@ export const PaymentChoiceContainer = styled.div`
   align-items: center;
   padding: 0px;
   gap: 0.75rem;
+`
 
-  button {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 1rem;
-    gap: 0.75rem;
+export const PaymentMethodButton = styled.button<PaymentMethodButtonProps>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1rem;
+  gap: 0.75rem;
 
-    width: 11.17rem;
-    height: 3.1875rem;
+  width: 11.17rem;
+  height: 3.1875rem;
 
-    /* Base/Button */
+  /* Base/Button */
 
-    background: ${(props) => props.theme['base-button']};
-    border-radius: 6px;
+  background: ${(props) =>
+    props.paymentMethod
+      ? props.theme['purple-light']
+      : props.theme['base-button']};
 
-    cursor: pointer;
+  border-radius: 6px;
 
-    border: 0px;
+  cursor: pointer;
 
-    &:focus {
-      /* Brand/Purple Light */
+  border: ${(props) =>
+    props.paymentMethod ? `1px solid ${props.theme.purple}` : 0};
 
-      background: ${(props) => props.theme['purple-light']};
-      /* Brand/Purple */
+  /* Brand/Purple Light */
 
-      border: 1px solid ${(props) => props.theme.purple};
-    }
+  //background: ${(props) => props.theme['purple-light']};
+  /* Brand/Purple */
 
-    span {
-      font-family: 'Roboto';
-      font-style: normal;
-      font-weight: 400;
-      font-size: 0.75rem;
-      line-height: 160%;
+  //border: 1px solid ${(props) => props.theme.purple};
 
-      text-transform: uppercase;
+  span {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 0.75rem;
+    line-height: 160%;
 
-      /* Base/Text */
+    text-transform: uppercase;
 
-      color: ${(props) => props.theme['base-text']};
-    }
+    /* Base/Text */
+
+    color: ${(props) => props.theme['base-text']};
   }
 `
 

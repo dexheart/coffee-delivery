@@ -1,5 +1,8 @@
 import { createContext, ReactNode, useState } from 'react'
 
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 interface UserOrder {
   id: number
   name: string
@@ -9,6 +12,17 @@ interface UserOrder {
   description: string
   selectToCart: boolean
   imageUrl: string
+}
+
+interface UserDataDelivery {
+  cep: string
+  rua: string
+  numero: number
+  complemento?: string
+  bairro: string
+  cidade: string
+  uf: string
+  payment: string
 }
 
 interface CoffeContextType {
@@ -28,6 +42,32 @@ export const CoffeContext = createContext({} as CoffeContextType)
 export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
   const [userOrder, setUserOrder] = useState<UserOrder[]>([])
 
+  const [userDataDelivery, setUserDataDelivery] = useState<UserDataDelivery>()
+
+  const notifySuccess = () =>
+    toast.success('Item adicionado ao carrinho.', {
+      position: 'bottom-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+    })
+
+  const notifyWarning = () =>
+    toast.warning('Quantidade máxima suportada por item: 9.', {
+      position: 'bottom-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+    })
+
   function handleAddNewCoffeToOrder(newElement: UserOrder) {
     const found = userOrder.find((order) => order.id === newElement.id)
 
@@ -35,23 +75,24 @@ export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
       setUserOrder((state) => {
         return (state = [...userOrder, newElement])
       })
+      notifySuccess()
     } else {
       if (found.amount + newElement.amount >= 9) {
         setUserOrder((state) => {
           return state.map((item) => {
             return item.id === found.id ? { ...item, amount: 9 } : item
-            // colocar popup
           })
         })
+        notifyWarning()
       } else {
         setUserOrder((state) => {
           return state.map((item) => {
             return item.id === found.id
               ? { ...item, amount: found.amount + newElement.amount }
               : item
-            // colocar popup
           })
         })
+        notifySuccess()
       }
     }
   }
