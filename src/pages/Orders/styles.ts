@@ -271,6 +271,10 @@ export const ItensOfOrderContainer = styled.div`
     border: 1px solid ${(props) => props.theme['base-button']};
   }
 
+  a {
+    text-decoration: none;
+  }
+
   button {
     display: flex;
     flex-direction: row;
@@ -295,6 +299,10 @@ export const ItensOfOrderContainer = styled.div`
 
     &:hover {
       background: ${(props) => props.theme['yellow-dark']};
+    }
+
+    &:disabled {
+      background: ${(props) => props.theme['yellow-light']};
     }
 
     span {

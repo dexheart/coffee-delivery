@@ -12,7 +12,7 @@ import {
   PaymentMethodButton,
 } from './styles'
 
-import { CoffeContext } from '../../contexts/CoffeContexts'
+import { CoffeContext, UserDataDelivery } from '../../contexts/CoffeContexts'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod'
@@ -25,23 +25,41 @@ import debitcardIcon from '../../assets/OrdersIcons/debitcard_Icon.svg'
 import moneyIcon from '../../assets/OrdersIcons/money_Icon.svg'
 import { useContext, useState } from 'react'
 import { ListOfUserOrderItens } from './ListOfUserOrderItens'
+import { NavLink } from 'react-router-dom'
 
 const userDeliveryDataSchema = zod.object({
-  cep: zod.string().min(14).max(14),
-  rua: zod.string().min(14).max(26),
+  cep: zod.string().min(1).max(14),
+  rua: zod.string().min(1).max(26),
   numero: zod.number().min(1).max(5),
-  bairro: zod.string().min(4).max(14),
-  cidade: zod.string().min(4).max(14),
+  complemento: zod.string().min(0).max(14),
+  bairro: zod.string().min(1).max(14),
+  cidade: zod.string().min(1).max(14),
   uf: zod.string().min(2).max(2),
 })
 
+// type NewCycleFormData = zod.infer<typeof userDeliveryDataSchema>
+
 export function Orders() {
-  const { userOrder } = useContext(CoffeContext)
+  const { userOrder, handleSetUserDataDelivery } = useContext(CoffeContext)
 
   const [paymentMethod, setPaymentMethod] = useState('')
 
-  const { register, handleSubmit, watch } = useForm({
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm({
     resolver: zodResolver(userDeliveryDataSchema),
+    defaultValues: {
+      cep: '',
+      rua: '',
+      numero: '',
+      complemento: '',
+      bairro: '',
+      cidade: '',
+      uf: '',
+    },
   })
 
   const sumOfPriceItens = userOrder.reduce(function (accumulator, curValue) {
@@ -50,6 +68,21 @@ export function Orders() {
   }, 0)
 
   const totalValue = sumOfPriceItens + 3.5
+
+  const isValidForm = isValid && paymentMethod
+
+  const dataDelivery: UserDataDelivery = {
+    cep: watch('cep'),
+    rua: watch('rua'),
+    numero: Number(watch('numero')),
+    complemento: watch('complemento'),
+    bairro: watch('bairro'),
+    cidade: watch('cidade'),
+    uf: watch('uf'),
+    payment: paymentMethod,
+  }
+
+  console.log(dataDelivery)
 
   return (
     <Wrapper>
@@ -96,10 +129,10 @@ export function Orders() {
               <div>
                 <BaseInputElements
                   id="numero"
-                  type="text"
+                  type="number"
                   placeholder="Número"
                   className="numero"
-                  {...register('numero')}
+                  {...register('numero', { valueAsNumber: true })}
                 />
 
                 <BaseInputElements
@@ -199,9 +232,17 @@ export function Orders() {
               <span className="total">R$ {totalValue.toFixed(2)}</span>
             </div>
           </PriceInformationContainer>
-          <button>
-            <span>Confirmar Perdido</span>
-          </button>
+          <NavLink to="/orders/finished" title="Finalizar Pedido">
+            <button
+              disabled={!isValidForm}
+              type="submit"
+              onClick={handleSubmit(() =>
+                handleSetUserDataDelivery(dataDelivery),
+              )}
+            >
+              <span>Confirmar Perdido</span>
+            </button>
+          </NavLink>
         </ItensOfOrderContainer>
       </div>
     </Wrapper>

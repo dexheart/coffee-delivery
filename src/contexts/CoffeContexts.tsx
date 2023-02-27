@@ -14,7 +14,7 @@ interface UserOrder {
   imageUrl: string
 }
 
-interface UserDataDelivery {
+export interface UserDataDelivery {
   cep: string
   rua: string
   numero: number
@@ -26,11 +26,13 @@ interface UserDataDelivery {
 }
 
 interface CoffeContextType {
+  handleSetUserDataDelivery: (data: UserDataDelivery) => void
   handleAddNewItemFromAmount: (idElement: number) => void
   handleRemoveOneItemFromAmount: (idElement: number) => void
   handleRemoveCoffeFromOrder: (idElement: number) => void
   handleAddNewCoffeToOrder: (newElement: UserOrder) => void
   userOrder: UserOrder[]
+  userDataDelivery: UserDataDelivery
 }
 
 interface CoffeContextProviderProps {
@@ -42,15 +44,24 @@ export const CoffeContext = createContext({} as CoffeContextType)
 export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
   const [userOrder, setUserOrder] = useState<UserOrder[]>([])
 
-  const [userDataDelivery, setUserDataDelivery] = useState<UserDataDelivery>()
+  const [userDataDelivery, setUserDataDelivery] = useState<UserDataDelivery>({
+    cep: '',
+    rua: '',
+    numero: 0,
+    complemento: '',
+    bairro: '',
+    cidade: '',
+    uf: '',
+    payment: '',
+  })
 
   const notifySuccess = () =>
     toast.success('Item adicionado ao carrinho.', {
       position: 'bottom-right',
       autoClose: 5000,
       hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
+      closeOnClick: false,
+      pauseOnHover: false,
       draggable: true,
       progress: undefined,
       theme: 'dark',
@@ -61,8 +72,8 @@ export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
       position: 'bottom-right',
       autoClose: 5000,
       hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
+      closeOnClick: false,
+      pauseOnHover: false,
       draggable: true,
       progress: undefined,
       theme: 'dark',
@@ -97,6 +108,10 @@ export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
     }
   }
 
+  function handleSetUserDataDelivery(data: UserDataDelivery) {
+    setUserDataDelivery((state) => ({ ...state, data }))
+  }
+
   function handleRemoveCoffeFromOrder(idElement: number) {
     setUserOrder((state) =>
       state.filter((item) => {
@@ -128,11 +143,13 @@ export function CoffeContextProvider({ children }: CoffeContextProviderProps) {
   return (
     <CoffeContext.Provider
       value={{
+        handleSetUserDataDelivery,
         handleAddNewItemFromAmount,
         handleRemoveOneItemFromAmount,
         handleRemoveCoffeFromOrder,
         handleAddNewCoffeToOrder,
         userOrder,
+        userDataDelivery,
       }}
     >
       {children}
